@@ -3,6 +3,7 @@ import './App.css';
 import { Checkbox } from 'antd';
 import { Empty } from './components/empty';
 import { getTodos, postTodo, patchTodo, deleteTodo } from './api';
+import { NONAME } from 'dns';
 
 
 function App() {
@@ -16,16 +17,15 @@ function App() {
 
   const [todoInput, setToDoInput] = React.useState<string>('')
   const [allTodos, setAllTodos] = React.useState<Array<TodoType>>([])
+  const [hideCompleted, toggleHide] = React.useState(false)
 
-  React.useEffect(() => {
-
-    const getAllTasks = async() => {
+  const getAllTasks = async() => {
     const response = await getTodos()
-    console.log(response) 
     setAllTodos(response)
     }
+  React.useEffect(() => {
     getAllTasks()
-  }, [])
+  }, [allTodos.length])
   
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault()
@@ -37,15 +37,20 @@ function App() {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     postTodo(todoInput)
+    getAllTasks()
+    e.currentTarget.reset()
 
   }
 
-  const handleEdit = () => {
-
+  const handleEdit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, id: number) => {
+    alert(id)
   }
 
-  const handleDelete = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, id: number) => {
-    deleteTodo(id)
+  const handleDelete = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, id: number) => {
+    await deleteTodo(id)
+    await getAllTasks()
+    alert(`TODO ${id} successully deleted.`)
+
   }
 
 
@@ -63,7 +68,7 @@ function App() {
         </form>
       </header>
       <main>
-        <h3>Tasks</h3>
+        <h3>Tasks ({allTodos.length})</h3>
         <div className='heavy to border, hidden bottom' style={{ border: 'solid green 1px' }}>
           {
             (allTodos.length === (0 | NaN))
@@ -71,11 +76,11 @@ function App() {
               : allTodos.map((todo) => {
                 const { id, todoText, isComplete } = todo
                 return (
-                  <div className='todo-entry' key={id}>
-                    <input type='checkbox' checked={isComplete} />
-                    <p>{todoText}</p>
-                    <button>Edit</button>
-                    <button onClick={(e) => handleDelete(e, id)}>Delete</button>
+                  <div key={id}>
+                    <input type='checkbox' readOnly checked={isComplete} />
+                    <p id={`todo-entry-${id}`}>{todoText}</p>
+                    <button id={`edit-${id}`} onClick={(e) => handleEdit(e, id)}>Edit</button>
+                    <button id={`delete-${id}`} onClick={(e) => handleDelete(e, id)}>Delete</button>
                   </div>
                 )
               })
@@ -86,11 +91,12 @@ function App() {
       </main>
 
       <footer>
-        <input type='checkbox' title='Hide Completed' name='hide' />
+        Hide Completed <input type='checkbox' title='Hide Completed' name='hide' onChange={(e) => (toggleHide(!hideCompleted))}/>
+        DEV: Hide Completed State: {String(hideCompleted)}
       </footer>
     </div>
   );
-}
+        }
 
 export default App;
 

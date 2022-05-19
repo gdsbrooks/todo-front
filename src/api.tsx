@@ -11,21 +11,19 @@ type TodoType = {
 
 export const getTodos = async () => {
    const response =  await axios.get(`${baseURL}/todos`)
-   console.log('getTodos response ', getTodos )
    return response.data
 }
 
-export const postTodo = (todo: string) => {
-    console.log('baseURL :>> ', baseURL);
-    return axios.post(`${baseURL}/todos`, { todoText: todo })
+export const postTodo = async (todo: string) => {
+    return await axios.post(`${baseURL}/todos`, { todoText: todo })
     
 }
 
-export const patchTodo = (todoID: number, update: TodoType) => {
+export const patchTodo = async (todoID: number, update: TodoType) => {
     const {todoText, isComplete} = update
-    return axios.patch(`${baseURL}/todo/${todoID}`, { todoText, isComplete})
+    return await axios.patch(`${baseURL}/todo/${todoID}`, { todoText, isComplete})
 }
 
-export const deleteTodo = (todoID: number) => {
-    return axios.delete(`${baseURL}/todo/${todoID}`)
+export const deleteTodo = async (todoID: number) => {
+    return await axios.delete(`${baseURL}/todo/${todoID}`)
 }
