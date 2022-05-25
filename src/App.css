@@ -36,3 +36,21 @@
     transform: rotate(360deg);
   }
 }
+
+.todo-entry {
+  display: flex;
+  flex-direction: row;
+  padding: 1rem;
+  justify-content: space-around
+}
+
+.single-todo {
+  padding: 1rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.single-todo:nth-child(odd) {
+  background-color: #DDDDDD;
+}

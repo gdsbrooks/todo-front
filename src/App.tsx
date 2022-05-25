@@ -1,9 +1,12 @@
 import * as React from 'react'
 import './App.css';
-import { Checkbox } from 'antd';
+import { Button, Checkbox, Form, Input, Layout, Typography } from 'antd';
 import { Empty } from './components/empty';
 import { getTodos, postTodo, patchTodo, deleteTodo } from './api';
 import { NONAME } from 'dns';
+import { Container } from '@mui/material';
+import { Content, Header, Footer } from 'antd/lib/layout/layout';
+import { DeleteOutlined } from '@ant-design/icons';
 
 
 function App() {
@@ -14,39 +17,32 @@ function App() {
     isComplete: boolean
   }
 
-
-  const [todoInput, setToDoInput] = React.useState<string>('')
+  const [form] = Form.useForm()
   const [allTodos, setAllTodos] = React.useState<Array<TodoType>>([])
   const [hideCompleted, toggleHide] = React.useState(false)
 
-  const getAllTasks = async() => {
+  const getAllTasks = async () => {
     const response = await getTodos()
     setAllTodos(response)
-    }
+  }
+
   React.useEffect(() => {
     getAllTasks()
   }, [allTodos.length])
-  
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    e.preventDefault()
-    console.log('todoInput :>> ', todoInput);
-    const todoInputField = e.target.value
-    setToDoInput(todoInputField)
-  }
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    postTodo(todoInput)
+
+  const handleSubmit = (values: any) => {
+    postTodo(values.todo)
+    form.resetFields()
     getAllTasks()
-    e.currentTarget.reset()
 
   }
 
-  const handleEdit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, id: number) => {
+  const handleEdit = (e: any, id: number) => {
     alert(id)
   }
 
-  const handleDelete = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, id: number) => {
+  const handleDelete = async (e: any, id: number) => {
     await deleteTodo(id)
     await getAllTasks()
     alert(`TODO ${id} successully deleted.`)
@@ -59,44 +55,54 @@ function App() {
 
   return (
     <div className="App">
-      <header>
-        <form onSubmit={handleSubmit}>
-          <input type='text' placeholder='Write new task here....' onChange={handleChange} />
+      <Layout>
+        <Header>
+          <Form className='todo-entry' form={form} layout={'inline'} onFinish={handleSubmit}>
+            <Form.Item name="todo" rules={[{ required: true }]}>
+              <Input placeholder='Write New Task Here...'/>
+            </Form.Item>
+            <Form.Item>
+              <Button type="primary" htmlType="submit">
+                Create
+              </Button>
+            </Form.Item>
+          </Form>
+        </Header>
+        <Content>
+          <main>
+            <Typography.Title level={3}>Tasks ({allTodos.length})</Typography.Title>
+            <div className='todo-list' style={{ border: 'solid green 1px' }}>
+              {
+                (allTodos.length === (0 | NaN))
+                  ? <Empty />
+                  : allTodos.map((todo) => {
+                    const { id, todoText, isComplete } = todo
+                    return (
+                      <div className='single-todo' key={id}>
+                        <Checkbox checked={isComplete} />
+                        <Typography.Paragraph id={`todo-entry-${id}`} style={{flexGrow: '1'}}>{todoText}</Typography.Paragraph>
+                        <Button size="large" type='text' name='edit' onClick={e => handleEdit(e, id)}>Edit</Button> /
+                       <Button size="large" type='text' name='delete' onClick={e => handleDelete(e, id)}>Delete</Button>
+                       
+
+                       </div>
+                    )
+                  })
+              }
+            </div>
 
 
-          <button type='submit'>Create</button>
-        </form>
-      </header>
-      <main>
-        <h3>Tasks ({allTodos.length})</h3>
-        <div className='heavy to border, hidden bottom' style={{ border: 'solid green 1px' }}>
-          {
-            (allTodos.length === (0 | NaN))
-              ? <Empty />
-              : allTodos.map((todo) => {
-                const { id, todoText, isComplete } = todo
-                return (
-                  <div key={id}>
-                    <input type='checkbox' readOnly checked={isComplete} />
-                    <p id={`todo-entry-${id}`}>{todoText}</p>
-                    <button id={`edit-${id}`} onClick={(e) => handleEdit(e, id)}>Edit</button>
-                    <button id={`delete-${id}`} onClick={(e) => handleDelete(e, id)}>Delete</button>
-                  </div>
-                )
-              })
-          }
-        </div>
+          </main>
+        </Content>
+        <Footer>
+          Hide Completed <input type='checkbox' title='Hide Completed' name='hide' onChange={(e) => (toggleHide(!hideCompleted))} />
+          DEV: Hide Completed State: {String(hideCompleted)}
+        </Footer>
+      </Layout>
 
-
-      </main>
-
-      <footer>
-        Hide Completed <input type='checkbox' title='Hide Completed' name='hide' onChange={(e) => (toggleHide(!hideCompleted))}/>
-        DEV: Hide Completed State: {String(hideCompleted)}
-      </footer>
-    </div>
+      =    </div>
   );
-        }
+}
 
 export default App;
 
