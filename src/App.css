@@ -37,11 +37,27 @@
   }
 }
 
+.main {
+  margin: 1rem;
+  background-color: white;
+  padding-block: 1rem;
+  margin-inline: auto;
+  max-width: 600px;
+  border:#282c34 2px solid;
+  border-radius: 1rem;
+  box-sizing: border-box;
+}
+
+
 .todo-entry {
   display: flex;
   flex-direction: row;
   padding: 1rem;
-  justify-content: space-around
+  border-bottom: 2px #282c34 solid ;
+  background-color: pink;
+  justify-content: space-around;
+  
+  
 }
 
 .single-todo {
@@ -52,5 +68,5 @@
 }
 
 .single-todo:nth-child(odd) {
-  background-color: #DDDDDD;
+  background-color: #b7dbf6;
 }

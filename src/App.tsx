@@ -1,12 +1,12 @@
 import * as React from 'react'
+import 'antd/dist/antd.css'
 import './App.css';
+import Todo from './components/Todo';
 import { Button, Checkbox, Form, Input, Layout, Typography } from 'antd';
 import { Empty } from './components/empty';
 import { getTodos, postTodo, patchTodo, deleteTodo } from './api';
-import { NONAME } from 'dns';
-import { Container } from '@mui/material';
 import { Content, Header, Footer } from 'antd/lib/layout/layout';
-import { DeleteOutlined } from '@ant-design/icons';
+import { CheckboxChangeEvent } from 'antd/lib/checkbox';
 
 
 function App() {
@@ -35,31 +35,15 @@ function App() {
     postTodo(values.todo)
     form.resetFields()
     getAllTasks()
-
   }
-
-  const handleEdit = (e: any, id: number) => {
-    alert(id)
-  }
-
-  const handleDelete = async (e: any, id: number) => {
-    await deleteTodo(id)
-    await getAllTasks()
-    alert(`TODO ${id} successully deleted.`)
-
-  }
-
-
-
-
 
   return (
     <div className="App">
-      <Layout>
-        <Header>
+      <Layout className='main'>
+        
           <Form className='todo-entry' form={form} layout={'inline'} onFinish={handleSubmit}>
-            <Form.Item name="todo" rules={[{ required: true }]}>
-              <Input placeholder='Write New Task Here...'/>
+            <Form.Item style={{ flexGrow: 1 }} name="todo" rules={[{ required: true }]}>
+              <Input placeholder='Write New Task Here...' />
             </Form.Item>
             <Form.Item>
               <Button type="primary" htmlType="submit">
@@ -67,32 +51,22 @@ function App() {
               </Button>
             </Form.Item>
           </Form>
-        </Header>
+
         <Content>
-          <main>
-            <Typography.Title level={3}>Tasks ({allTodos.length})</Typography.Title>
-            <div className='todo-list' style={{ border: 'solid green 1px' }}>
-              {
-                (allTodos.length === (0 | NaN))
-                  ? <Empty />
-                  : allTodos.map((todo) => {
-                    const { id, todoText, isComplete } = todo
-                    return (
-                      <div className='single-todo' key={id}>
-                        <Checkbox checked={isComplete} />
-                        <Typography.Paragraph id={`todo-entry-${id}`} style={{flexGrow: '1'}}>{todoText}</Typography.Paragraph>
-                        <Button size="large" type='text' name='edit' onClick={e => handleEdit(e, id)}>Edit</Button> /
-                       <Button size="large" type='text' name='delete' onClick={e => handleDelete(e, id)}>Delete</Button>
-                       
+          <Typography.Title level={3}>Tasks ({allTodos.length})</Typography.Title>
+          <div className='todo-list'>
+            {
+              (allTodos.length === (0 | NaN))
+                ? <Empty /> 
+                : allTodos.map((todo) => {
+                  const { id, todoText, isComplete } = todo
+                  return (
+                    <Todo id={id} isComplete={isComplete} todoText={todoText} getAllTasks={getAllTasks}/>
+                  )
+                })
+            }
+          </div>
 
-                       </div>
-                    )
-                  })
-              }
-            </div>
-
-
-          </main>
         </Content>
         <Footer>
           Hide Completed <input type='checkbox' title='Hide Completed' name='hide' onChange={(e) => (toggleHide(!hideCompleted))} />
@@ -113,3 +87,5 @@ interface TodoPropsInterface {
   delete: () => void
 
 }
+
+
