@@ -1,6 +1,4 @@
-.App {
-  text-align: center;
-}
+
 
 .App-logo {
   height: 40vmin;
@@ -53,11 +51,14 @@
   display: flex;
   flex-direction: row;
   padding: 1rem;
+  padding-block-end: 2rem;
   border-bottom: 2px #282c34 solid ;
-  background-color: pink;
+  background-color: inherit;
   justify-content: space-around;
-  
-  
+}
+
+h4 {
+  margin: 1rem !important;
 }
 
 .single-todo {
@@ -65,6 +66,10 @@
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+}
+
+.single-todo .ant-typography {
+  margin-inline-start: 1rem;
 }
 
 .single-todo:nth-child(odd) {

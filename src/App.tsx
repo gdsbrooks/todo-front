@@ -2,11 +2,12 @@ import * as React from 'react'
 import 'antd/dist/antd.css'
 import './App.css';
 import Todo from './components/Todo';
-import { Button, Checkbox, Form, Input, Layout, Typography } from 'antd';
+import { Button, Checkbox, Form, Input, Layout, Tooltip, Typography } from 'antd';
 import { Empty } from './components/empty';
 import { getTodos, postTodo, patchTodo, deleteTodo } from './api';
 import { Content, Header, Footer } from 'antd/lib/layout/layout';
 import { CheckboxChangeEvent } from 'antd/lib/checkbox';
+import TodoInput from './components/TodoInput';
 
 
 function App() {
@@ -14,11 +15,12 @@ function App() {
   type TodoType = {
     id: number,
     todoText: string,
-    isComplete: boolean
+    isComplete: boolean | number
   }
 
   const [form] = Form.useForm()
   const [allTodos, setAllTodos] = React.useState<Array<TodoType>>([])
+  const [filteredTodos, setFilteredTodos] = React.useState<Array<TodoType>>(allTodos)
   const [hideCompleted, toggleHide] = React.useState(false)
 
   const getAllTasks = async () => {
@@ -28,40 +30,29 @@ function App() {
 
   React.useEffect(() => {
     getAllTasks()
-  }, [allTodos.length])
+    console.log('allTodos :>> ', allTodos);
+  }, [])
 
-
-  const handleSubmit = (values: any) => {
-    postTodo(values.todo)
-    form.resetFields()
-    getAllTasks()
-  }
 
   return (
     <div className="App">
       <Layout className='main'>
-        
-          <Form className='todo-entry' form={form} layout={'inline'} onFinish={handleSubmit}>
-            <Form.Item style={{ flexGrow: 1 }} name="todo" rules={[{ required: true }]}>
-              <Input placeholder='Write New Task Here...' />
-            </Form.Item>
-            <Form.Item>
-              <Button type="primary" htmlType="submit">
-                Create
-              </Button>
-            </Form.Item>
-          </Form>
+        <TodoInput getAllTasks={getAllTasks} />
 
         <Content>
-          <Typography.Title level={3}>Tasks ({allTodos.length})</Typography.Title>
+          <Typography.Title level={4}>
+            <Tooltip placement="right" arrowPointAtCenter title={`Click to sort by Task age / Alphabetically ascending / descending`}>
+              Tasks ({allTodos.length})
+            </Tooltip>
+            </Typography.Title>
           <div className='todo-list'>
             {
               (allTodos.length === (0 | NaN))
-                ? <Empty /> 
-                : allTodos.map((todo) => {
+                ? <Empty />
+                : allTodos.map((todo: TodoType) => {
                   const { id, todoText, isComplete } = todo
                   return (
-                    <Todo id={id} isComplete={isComplete} todoText={todoText} getAllTasks={getAllTasks}/>
+                    <Todo id={id} isComplete={isComplete} todoText={todoText} getAllTasks={getAllTasks} />
                   )
                 })
             }
