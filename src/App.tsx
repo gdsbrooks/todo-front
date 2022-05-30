@@ -20,7 +20,6 @@ function App() {
 
   const [form] = Form.useForm()
   const [allTodos, setAllTodos] = React.useState<Array<TodoType>>([])
-  const [filteredTodos, setFilteredTodos] = React.useState<Array<TodoType>>(allTodos)
   const [hideCompleted, toggleHide] = React.useState(false)
 
   const getAllTasks = async () => {
@@ -34,6 +33,9 @@ function App() {
     console.log('allTodos :>> ', allTodos);
   }, [allTodos.length])
 
+  const filteredList = (hideCompleted === true)
+    ? [...allTodos].filter(todo => !todo.isComplete)
+    : [...allTodos]
 
   return (
     <div className="App">
@@ -45,25 +47,24 @@ function App() {
             <Tooltip placement="right" arrowPointAtCenter title={`Click to sort by Task age / Alphabetically ascending / descending`}>
               Tasks ({allTodos.length})
             </Tooltip>
-            </Typography.Title>
+          </Typography.Title>
           <div className='todo-list'>
             {
               (allTodos.length === (0 | NaN))
                 ? <Empty />
-                : allTodos.map((todo: TodoType) => {
+                : filteredList.map((todo: TodoType) => {
                   const { id, todoText, isComplete } = todo
                   return (
-                    <Todo id={id} isComplete={isComplete} todoText={todoText} getAllTasks={getAllTasks} />
+                    <Todo key={id} id={id} isComplete={isComplete} todoText={todoText} getAllTasks={getAllTasks} />
                   )
                 })
             }
           </div>
 
         </Content>
-        <Footer>
-          Hide Completed <input type='checkbox' title='Hide Completed' name='hide' onChange={(e) => (toggleHide(!hideCompleted))} />
-          DEV: Hide Completed State: {String(hideCompleted)}
-        </Footer>
+        <div className='footer'>
+          <Checkbox name='hide' onChange={(e: CheckboxChangeEvent) => (toggleHide(!hideCompleted))}>Hide Completed Tasks</Checkbox>
+         </div>
       </Layout>
 
       =    </div>

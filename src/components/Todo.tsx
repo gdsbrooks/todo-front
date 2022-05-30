@@ -17,7 +17,8 @@ function Todo(props: TodoPropsInterface) {
   
     const handleCheckTask = () => {
       toggleChecked(!checked)
-      patchTodo(id, {todoText, isComplete: !isComplete} )
+      patchTodo({id, todoText, isComplete: !isComplete} )
+      getAllTasks()
     }
   
     const handleEdit = (e: any, id: number) => {
@@ -26,12 +27,12 @@ function Todo(props: TodoPropsInterface) {
   
     const handleDelete = async (e: any, id: number) => {
       await deleteTodo(id)
-      await getAllTasks()
+      getAllTasks()
       alert(`TODO ${id} successully deleted.`)
   
     }
   
-    return (<div className='single-todo' key={id}>
+    return (<div className='single-todo'>
       <Checkbox onChange={handleCheckTask} checked={checked} />
       <Typography.Paragraph id={`todo-entry-${id}`} style={{
         flexGrow: '1'
