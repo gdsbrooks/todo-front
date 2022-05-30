@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Button, Checkbox, Typography } from 'antd';
-import { getTodos, postTodo, patchTodo, deleteTodo } from '../api';
+import { patchTodo, deleteTodo } from '../api';
 
 interface TodoPropsInterface {
   id: number,
