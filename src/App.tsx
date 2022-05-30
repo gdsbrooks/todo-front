@@ -26,12 +26,13 @@ function App() {
   const getAllTasks = async () => {
     const response = await getTodos()
     setAllTodos(response)
+    console.log('allTodos :>> ', allTodos);
   }
 
   React.useEffect(() => {
     getAllTasks()
     console.log('allTodos :>> ', allTodos);
-  }, [])
+  }, [allTodos.length])
 
 
   return (

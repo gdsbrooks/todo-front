@@ -2,6 +2,7 @@ import axios from "axios";
 const baseURL = 'http://localhost:5005'
 
 type TodoType = {
+    id: number,
     todoText: string,
     isComplete: boolean
   }
@@ -11,7 +12,11 @@ type TodoType = {
 
 export const getTodos = async () => {
    const response =  await axios.get(`${baseURL}/todos`)
-   return response.data
+   const booleanData = response.data.map((todo: TodoType) => {
+       todo.isComplete = Boolean(todo.isComplete)
+    return todo
+})
+      return booleanData
 }
 
 export const postTodo = async (todo: string) => {
@@ -19,8 +24,8 @@ export const postTodo = async (todo: string) => {
     
 }
 
-export const patchTodo = async (todoID: number, update: TodoType) => {
-    const {todoText, isComplete} = update
+export const patchTodo = async (update: TodoType) => {
+    const {id: todoID, todoText, isComplete} = update
     return await axios.patch(`${baseURL}/todo/${todoID}`, { todoText, isComplete})
 }
 
