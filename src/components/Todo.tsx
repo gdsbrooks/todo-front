@@ -18,6 +18,8 @@ function Todo(props: TodoPropsInterface) {
 
   const [checked, toggleChecked] = React.useState<boolean>(isComplete)
   const [editing, toggleEdit] = React.useState<boolean>(false)
+  const [editInline] = Form.useForm()
+
 
   const handleCheckTask = () => {
     toggleChecked(!checked)
@@ -25,18 +27,14 @@ function Todo(props: TodoPropsInterface) {
     getAllTasks()
   }
 
-  const handleEdit = () => {
-    toggleEdit(!editing)
-  }
-
   const handleUpdate = async (values: any) => {
     toggleEdit(false)
     const update = { id, isComplete, todoText: values.updatedTodo }
-    const response = await patchTodo(update)  
+    const response = await patchTodo(update)
     console.log('response :>> ', response);
-     getAllTasks()
-     if (response.status === 200) {
-      alert(`Task updated sccessfully`) 
+    getAllTasks()
+    if (response.status === 200) {
+      alert(`Task updated sccessfully`)
     };
   }
 
@@ -50,7 +48,12 @@ function Todo(props: TodoPropsInterface) {
 
     {
       (editing === true)
-        ? <InlineEdit id={id} isComplete={isComplete} todoText={todoText} handleUpdate={handleUpdate} />
+        ? <>
+          <Form className='inline-edit' form={editInline} initialValues={{ updatedTodo: todoText }} layout='inline' onFinish={handleUpdate}>
+            <Form.Item name="updatedTodo"><Input autoFocus /></Form.Item>
+            <Form.Item> <Button icon={<EnterOutlined />} type="primary" ghost htmlType="submit" /> </Form.Item>
+          </Form>
+          </>
         : <>
           <Checkbox onChange={handleCheckTask} checked={checked} />
           <Paragraph id={`todo-entry-${id}`}> {todoText} </Paragraph>
@@ -59,21 +62,6 @@ function Todo(props: TodoPropsInterface) {
         </>
     }
   </div>);
-}
-
-const InlineEdit = ({ id, isComplete, todoText, handleUpdate }: any) => {
-
-  const [editInline] = Form.useForm()
-  return (
-    <Form className='inline-edit' form={editInline} initialValues={{updatedTodo: todoText}} layout='inline' onFinish={handleUpdate}>
-      <Form.Item name="updatedTodo">
-        <Input autoFocus/>
-      </Form.Item>
-      <Form.Item>
-        <Button icon={<EnterOutlined />} type="primary" htmlType="submit" />
-      </Form.Item>
-    </Form>
-  )
 }
 
 
