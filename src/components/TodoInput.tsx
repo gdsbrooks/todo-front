@@ -9,8 +9,8 @@ export default function TodoInput () {
     const {getAllTasks} = React.useContext(TodoContext) as TodoContextType
     const [form] = Form.useForm()
 
-    const handleSubmit = (values: any) => {
-        postTodo(values.todo)
+    const handleSubmit = async (values: any) => {
+        await postTodo(values.todo)
         form.resetFields()
         getAllTasks()
       }

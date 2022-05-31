@@ -18,9 +18,9 @@ function Todo(props: ITodo) {
   const [editInline] = Form.useForm()
 
 
-  const handleCheckTask = () => {
+  const handleCheckTask = async () => {
     toggleChecked(!checked)
-    patchTodo({ id, todoText, isComplete: !isComplete })
+    await patchTodo({ id, todoText, isComplete: !isComplete })
     getAllTasks()
   }
 
@@ -28,7 +28,6 @@ function Todo(props: ITodo) {
     toggleEdit(false)
     const update = { id, isComplete, todoText: values.updatedTodo }
     const response = await patchTodo(update)
-    console.log('response :>> ', response);
     getAllTasks()
     if (response.status === 200) {
       alert(`Task updated sccessfully`)
