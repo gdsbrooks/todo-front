@@ -32,13 +32,12 @@ function Todo(props: TodoPropsInterface) {
   const handleUpdate = async (values: any) => {
     toggleEdit(false)
     const update = { id, isComplete, todoText: values.updatedTodo }
-    const response = await patchTodo(update)        
-    getAllTasks()
-    response.status === 200
-      ? alert(`Task updated sccessfully`)
-      : response.status === 400
-        ? alert(`Task can't be updated - it's already marked as complete!`)
-        : alert(`HTTP Response: ${response.status} - ${response.statusText} `)
+    const response = await patchTodo(update)  
+    console.log('response :>> ', response);
+     getAllTasks()
+     if (response.status === 200) {
+      alert(`Task updated sccessfully`) 
+    };
   }
 
   const handleDelete = async (e: React.MouseEvent, id: number) => {
@@ -66,9 +65,9 @@ const InlineEdit = ({ id, isComplete, todoText, handleUpdate }: any) => {
 
   const [editInline] = Form.useForm()
   return (
-    <Form className='inline-edit' form={editInline} layout='inline' onFinish={handleUpdate}>
+    <Form className='inline-edit' form={editInline} initialValues={{updatedTodo: todoText}} layout='inline' onFinish={handleUpdate}>
       <Form.Item name="updatedTodo">
-        <Input autoFocus defaultValue={todoText} />
+        <Input autoFocus/>
       </Form.Item>
       <Form.Item>
         <Button icon={<EnterOutlined />} type="primary" htmlType="submit" />
