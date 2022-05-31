@@ -70,6 +70,7 @@ h4 {
 
 .single-todo .ant-typography {
   margin-inline-start: 1rem;
+  flex-grow: 1;
 }
 
 .single-todo:nth-child(odd) {
