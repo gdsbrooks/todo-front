@@ -3,12 +3,12 @@ import 'antd/dist/antd.css'
 import './App.css';
 import Todo from './components/Todo';
 import { Button, Checkbox, Layout, Tooltip, Typography } from 'antd';
-import { Empty } from './components/empty';
-import { getTodos } from './api';
+import { Empty } from './components/Empty';
+import { getTodos } from './utilities/api';
 import { Content } from 'antd/lib/layout/layout';
 import { CheckboxChangeEvent } from 'antd/lib/checkbox';
 import TodoInput from './components/TodoInput';
-import compare from './sort';
+import compare from './utilities/sort';
 
 
 function App() {

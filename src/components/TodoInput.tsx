@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Button, Form, Input} from 'antd';
-import { postTodo } from '../api';
+import { postTodo } from '../utilities/api';
 export interface ITodoInputProps {
     getAllTasks: () => void
 }
@@ -20,7 +20,7 @@ export default function TodoInput (props: ITodoInputProps) {
   return (
     <>
       <Form className='todo-entry' form={form} layout={'inline'} onFinish={handleSubmit}>
-            <Form.Item style={{ flexGrow: 1 }} name="todo" rules={[{ required: true }]}>
+            <Form.Item name="todo" rules={[{ required: true }]}>
               <Input placeholder='Write New Task Here...' />
             </Form.Item>
             <Form.Item>

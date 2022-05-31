@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Button, Form, Input, Checkbox, Typography } from 'antd';
-import { patchTodo, deleteTodo } from '../api';
+import { patchTodo, deleteTodo } from '../utilities/api';
 import { EnterOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
 
 const { Paragraph } = Typography
@@ -30,11 +30,15 @@ function Todo(props: TodoPropsInterface) {
   }
 
   const handleUpdate = async (values: any) => {
-        toggleEdit(false)
-        const update = {id, isComplete, todoText: values.updatedTodo}
-        const response = await patchTodo(update)
-        console.log('response :>> ', response);
-        getAllTasks()
+    toggleEdit(false)
+    const update = { id, isComplete, todoText: values.updatedTodo }
+    const response = await patchTodo(update)        
+    getAllTasks()
+    response.status === 200
+      ? alert(`Task updated sccessfully`)
+      : response.status === 400
+        ? alert(`Task can't be updated - it's already marked as complete!`)
+        : alert(`HTTP Response: ${response.status} - ${response.statusText} `)
   }
 
   const handleDelete = async (e: React.MouseEvent, id: number) => {
@@ -44,14 +48,15 @@ function Todo(props: TodoPropsInterface) {
   }
 
   return (<div className='single-todo'>
-    <Checkbox onChange={handleCheckTask} checked={checked} />
+
     {
       (editing === true)
         ? <InlineEdit id={id} isComplete={isComplete} todoText={todoText} handleUpdate={handleUpdate} />
         : <>
+          <Checkbox onChange={handleCheckTask} checked={checked} />
           <Paragraph id={`todo-entry-${id}`}> {todoText} </Paragraph>
-          <Button type='text' icon={<EditOutlined/>}  name='edit' onClick={e => toggleEdit(!editing)}/>
-          <Button  type='text' icon={<DeleteOutlined />} danger name='delete' onClick={e => handleDelete(e, id)}/>
+          <Button type='text' icon={<EditOutlined />} name='edit' onClick={e => toggleEdit(!editing)} />
+          <Button type='text' icon={<DeleteOutlined />} danger name='delete' onClick={e => handleDelete(e, id)} />
         </>
     }
   </div>);
@@ -61,12 +66,12 @@ const InlineEdit = ({ id, isComplete, todoText, handleUpdate }: any) => {
 
   const [editInline] = Form.useForm()
   return (
-    <Form form={editInline} layout={'inline'} onFinish={handleUpdate}>
+    <Form className='inline-edit' form={editInline} layout='inline' onFinish={handleUpdate}>
       <Form.Item name="updatedTodo">
-        <Input defaultValue={todoText} style={{ width: '400px', maxWidth: 'auto', flexGrow: 1 }} />
+        <Input autoFocus defaultValue={todoText} />
       </Form.Item>
       <Form.Item>
-        <Button icon={<EnterOutlined/>} type="primary" htmlType="submit"/>
+        <Button icon={<EnterOutlined />} type="primary" htmlType="submit" />
       </Form.Item>
     </Form>
   )

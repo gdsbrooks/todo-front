@@ -57,6 +57,7 @@
   justify-content: space-around;
 }
 
+
 h4 {
   margin: 1rem !important;
 }
@@ -73,6 +74,12 @@ h4 {
   flex-grow: 1;
 }
 
+.single-todo .inline-edit {
+  width: 100%;
+}
+.ant-form-item:first-child {
+  flex-grow: 1;
+}
 .single-todo:nth-child(odd) {
   background-color: #b7dbf6;
 }
