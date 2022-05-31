@@ -1,18 +1,16 @@
 import * as React from 'react';
 import { Button, Form, Input} from 'antd';
 import { postTodo } from '../utilities/api';
-export interface ITodoInputProps {
-    getAllTasks: () => void
-}
+import { TodoContext, TodoContextType } from '../utilities/todo.context';
 
-export default function TodoInput (props: ITodoInputProps) {
+
+export default function TodoInput () {
     
-    const {getAllTasks} = props
+    const {getAllTasks} = React.useContext(TodoContext) as TodoContextType
     const [form] = Form.useForm()
 
     const handleSubmit = (values: any) => {
         postTodo(values.todo)
-        console.log('values :>> ', values);
         form.resetFields()
         getAllTasks()
       }

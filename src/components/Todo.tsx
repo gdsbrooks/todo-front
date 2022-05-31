@@ -2,19 +2,16 @@ import * as React from 'react'
 import { Button, Form, Input, Checkbox, Typography } from 'antd';
 import { patchTodo, deleteTodo } from '../utilities/api';
 import { EnterOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
+import { ITodo, TodoContext, TodoContextType } from '../utilities/todo.context';
 
 const { Paragraph } = Typography
 
-interface TodoPropsInterface {
-  id: number,
-  isComplete: any,
-  todoText: string,
-  getAllTasks: () => void
-}
 
-function Todo(props: TodoPropsInterface) {
 
-  const { id, isComplete, todoText, getAllTasks } = props
+function Todo(props: ITodo) {
+
+  const { id, isComplete, todoText } = props
+  const {getAllTasks} = React.useContext(TodoContext) as TodoContextType
 
   const [checked, toggleChecked] = React.useState<boolean>(isComplete)
   const [editing, toggleEdit] = React.useState<boolean>(false)

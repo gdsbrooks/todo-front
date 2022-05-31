@@ -9,45 +9,42 @@ import { Content } from 'antd/lib/layout/layout';
 import { CheckboxChangeEvent } from 'antd/lib/checkbox';
 import TodoInput from './components/TodoInput';
 import compare from './utilities/sort';
+import { ITodo, TodoContext, TodoContextType } from './utilities/todo.context';
 
 
 function App() {
 
-  type TodoType = {
-    id: number,
-    todoText: string,
-    isComplete: boolean | number
-  }
+  //Todos State and Fetch/Update function provided by Context.
+  const { allTodos, getAllTasks } = React.useContext(TodoContext) as TodoContextType
 
-  const [allTodos, setAllTodos] = React.useState<Array<TodoType>>([])
   const [sortMethod, setSortMethod] = React.useState<number>(0)
   const [hideCompleted, toggleHide] = React.useState(false)
 
-  const getAllTasks = async () => {
-    const response = await getTodos()
-    setAllTodos(response)
-  }
 
   React.useEffect(() => {
     getAllTasks()
   }, [allTodos.length])
 
+  //Filter out (hide) completed tasks based on state controoled checkbox 
   const filteredList = (hideCompleted === true)
     ? [...allTodos].filter(todo => !todo.isComplete)
     : [...allTodos]
 
-  const sortedList = filteredList.sort(compare(sortMethod))
-
-  const handleSort = () => {
+//Cycles throught 3 different sort compare functions (by age / ID number, alphabetically asc and desc)
+//and applies the relevant compare function to sort the filtered list.
+const handleSort = () => {
     sortMethod < 2
       ? setSortMethod(sortMethod + 1)
       : setSortMethod(0)
   }
+  const sortedList = filteredList.sort(compare(sortMethod))
+
+  
 
   return (
     <div className="App">
       <Layout className='main'>
-        <TodoInput getAllTasks={getAllTasks} />
+        <TodoInput />
         <Content>
 
           <Typography.Title level={4} onClick={handleSort}>
@@ -59,10 +56,10 @@ function App() {
             {
               (allTodos.length === (0 | NaN))
                 ? <Empty />
-                : sortedList.map((todo: TodoType) => {
+                : sortedList.map((todo: ITodo) => {
                   const { id, todoText, isComplete } = todo
                   return (
-                    <Todo key={id} id={id} isComplete={isComplete} todoText={todoText} getAllTasks={getAllTasks} />
+                    <Todo key={id} id={id} isComplete={isComplete} todoText={todoText} />
                   )
                 })
             }
@@ -73,7 +70,6 @@ function App() {
           <Checkbox name='hide' onChange={(e: CheckboxChangeEvent) => (toggleHide(!hideCompleted))}>Hide Completed Tasks</Checkbox>
         </div>
       </Layout>
-
     </div>
   );
 }
