@@ -1,18 +1,12 @@
 import axios from "axios";
+import { ITodo } from "./todo.context";
 const baseURL = 'http://localhost:5005'
 
-type TodoType = {
-    id: number,
-    todoText: string,
-    isComplete: boolean
-  }
-
-//Parameter Types
 
 
 export const getTodos = async () => {
    const response =  await axios.get(`${baseURL}/todos`)
-   const booleanData = response.data.map((todo: TodoType) => {
+   const booleanData = response.data.map((todo: ITodo) => {
        todo.isComplete = Boolean(todo.isComplete)
     return todo
 })
@@ -24,7 +18,7 @@ export const postTodo = async (todo: string) => {
     
 }
 
-export const patchTodo = async (update: TodoType) => {
+export const patchTodo = async (update: ITodo) => {
     const {id: todoID, todoText, isComplete} = update
     return await axios.patch(`${baseURL}/todo/${todoID}`, { todoText, isComplete})
 }

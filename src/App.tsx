@@ -2,13 +2,12 @@ import * as React from 'react'
 import 'antd/dist/antd.css'
 import './App.css';
 import Todo from './components/Todo';
-import { Button, Checkbox, Layout, Tooltip, Typography } from 'antd';
+import { Checkbox, Layout, Tooltip, Typography } from 'antd';
 import { Empty } from './components/Empty';
-import { getTodos } from './utilities/api';
 import { Content } from 'antd/lib/layout/layout';
 import { CheckboxChangeEvent } from 'antd/lib/checkbox';
-import TodoInput from './components/TodoInput';
-import compare from './utilities/sort';
+import {TodoInput} from './components/index';
+import compare from './utilities/sort'
 import { ITodo, TodoContext, TodoContextType } from './utilities/todo.context';
 
 
@@ -46,7 +45,6 @@ const handleSort = () => {
       <Layout className='main'>
         <TodoInput />
         <Content>
-
           <Typography.Title level={4} onClick={handleSort}>
             <Tooltip placement="right" arrowPointAtCenter title={`Click to sort by Task age / Alphabetically ascending / descending`}>
               Tasks ({allTodos.length})
